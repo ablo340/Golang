@@ -6,11 +6,11 @@ import "fmt"
 // checks whether a given string contains a given character or not
 /*func contains_error(sentence string, character string) (string, int) {
 	for i, char := range sentence{
-		if string(char) == character{ // char ou sentence[i] est un type d'octet => casse explicite
-			return string(char), true
+		if char == character{ // char ou sentence[i] est un type d'octet => casse explicite
+			return character, true
 		}
 	}
-	return string(char)
+	return string(character)
 }*/
 
 

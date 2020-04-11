@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"encoding/gob"
 	"os"
-	//"io/ioutil"
-	//"bytes"
+	"io/ioutil"
+	"bytes"
 )
 
 /* 
@@ -206,11 +206,12 @@ func save(s []Student){
 	fmt.Scanf("%s\n", &namefile)
 
 	f, err := os.Create(namefile)
+	defer f.Close()
 	if err != nil {
 		fmt.Printf("ERROR: Could not open file \"%s\" for saving\n", namefile)
 		return
     }
-	defer f.Close()
+	
 
 	encoder := gob.NewEncoder(f)
 	err = encoder.Encode(s)
@@ -219,7 +220,7 @@ func save(s []Student){
 
 // load student in file
 func load(s []Student){
-	/*var namefile string
+	var namefile string
 
 	fmt.Printf("----------- Loading students to file -----------\n\n")
 	fmt.Printf("Enter file name: ")
@@ -232,7 +233,7 @@ func load(s []Student){
 	}
 	
 	decoder := gob.NewDecoder(bytes.NewReader(f))
-	err = decoder.Decode(&s)*/
+	err = decoder.Decode(&s)
 }
 
 

@@ -4,21 +4,23 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"time"
 )
 
 type ContactBook struct {
-	Name string
+	Name     string
 	Contacts []map[string]string
-
 }
 
 func check(e error) {
-    if e != nil {
-		fmt.Println(e)
-		return
+	if e != nil {
+		//fmt.Println(e)
+		log.Fatal(e)
+		//return
+		//os.Exit(3)
 		//panic(e)
-    }
+	}
 }
 
 // meanBirthYear computes the mean birth year
@@ -26,7 +28,7 @@ func check(e error) {
 func meanBirthYear(cb *ContactBook) float64 {
 	var mean float64
 
-	for i := 0; i < len(cb.Contacts); i++{
+	for i := 0; i < len(cb.Contacts); i++ {
 		birth, err := time.Parse(time.RFC3339, cb.Contacts[i]["birthday"])
 		check(err)
 		year := birth.Year()

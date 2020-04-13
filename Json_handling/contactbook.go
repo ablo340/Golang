@@ -4,8 +4,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
-	"log"
+	//"log"
 	"time"
+	"os"
 )
 
 type ContactBook struct {
@@ -15,10 +16,10 @@ type ContactBook struct {
 
 func check(e error) {
 	if e != nil {
-		//fmt.Println(e)
-		log.Fatal(e)
+		fmt.Println(e)
+		//log.Fatal(e)
 		//return
-		//os.Exit(3)
+		os.Exit(0)
 		//panic(e)
 	}
 }

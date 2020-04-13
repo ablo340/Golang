@@ -13,10 +13,7 @@ import (
 
 func check(e error) {
     if e != nil {
-		//fmt.Println(e)
 		log.Fatal(e)
-		//os.Exit(3)
-		//panic(e)
 	}
 }
 
@@ -49,6 +46,7 @@ func analyse(data []float64) map[string]float64 {
 	result := make(map[string]float64)
 	result["first"] = data[0]
 	result["random"] = random(data)
+	result["pair"] = pair(data)  // part coding in live
 	return result
 }
 
@@ -65,11 +63,11 @@ func greatest(data []float64) float64 {
 }
 
 
-// positive numbers
-func positive_nb(data []float64) float64 {
+// number of pair number
+func pair(data []float64) float64 {
 	var result float64 = 0.0
 	for _, v := range data{
-		if v > 0 {
+		if int(v)%2 == 0  {
 			result++
 		}
 	}
@@ -108,8 +106,8 @@ func fact(n int) (int, error) {
 }
 
 func main() {
-	data, err:= readData("data.txt")
+	data, err := readData("data.txt")
 	check(err)
-	results := sum(data)
+	results := analyse(data)
 	fmt.Println(results)
 }

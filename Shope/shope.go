@@ -20,42 +20,23 @@ func check(err error) {
 	}
 }
 
-func edit_db(db []Game, file string) {
+func edit_db(db *[]Game, file string) {
 	input, err := ioutil.ReadFile(file)
 	check(err)
 
-	lines := strings.Split(string(input), "\n")
+	lines := strings.Split(string(input), "\r\n")
 	
-	for _, game := range db {
+	for _, game := range *db {
 		for l, line := range lines {
 			if strings.Contains(line, game.Name) {
 				lines[l] = game.Name + ":" + strconv.Itoa(game.Quantity)
 			}
 		}
 	}
-	output := strings.Join(lines, "\n")
+	output := strings.Join(lines, "\r\n")
 	err = ioutil.WriteFile(file, []byte(output), 0644)
 	check(err)
 }
-
-func edit_file() {
-	input, err := ioutil.ReadFile("file")
-	check(err)
-
-	lines := strings.Split(string(input), "\n")
-	
-
-	for l, line := range lines {
-		if strings.Contains(line, "Ps4") {
-			lines[l] = "[]"
-		}
-	}
-	
-	output := strings.Join(lines, "\n")
-	err = ioutil.WriteFile("file", []byte(output), 0644)
-	check(err)
-}
-
 
 
 // Load database
@@ -96,30 +77,30 @@ func (g *Game) edit(numb int) {
 	g.Quantity = g.Quantity - numb
 }
 
-func display_db(db []Game) {
+func display_db(db *[]Game) {
 	fmt.Println("----------- Games in stock -----------")
-	for i := 0; i < len(db); i++ {
-		db[i].infos()
+	for _, v := range *db {
+		v.infos()
 	}
 }
 
-func search(db []Game) *Game{
+func search(db *[]Game) *Game{
 	var game Game
 	var name string
 
 	fmt.Printf("\nWhat's the name ")
 	fmt.Scanf("%s\n", &name)
 
-	for i := 0; i < len(db); i++{
-		if db[i].Name == name{
-			return &db[i]
+	for _, v := range *db {
+		if v.Name == name{
+			return &v
 		}
 	}
 	return &game
 }
 
 
-func order(db []Game, panier *[]Game){
+func order(db *[]Game, panier *[]Game){
 	var numb int
 	order := true
 
@@ -154,15 +135,15 @@ func order(db []Game, panier *[]Game){
 }
 
 // see panier
-func show_panier(panier []Game) {
+func show_panier(panier *[]Game) {
 	fmt.Println("----------- Panier -----------")
 
-	if panier == nil {
+	if *panier == nil {
 		fmt.Printf("Panier is empty\n\n")
 		return
 	}
-	for i := 0; i < len(panier); i++ {
-		panier[i].infos()
+	for _, v := range *panier {
+		v.infos()
 	}
 }
 
@@ -174,7 +155,7 @@ func confirm_order() bool {
 }
 
 
-func update_db(db []Game, panier *[]Game, confirm bool) {
+func update_db(db *[]Game, panier *[]Game, confirm bool) {
 	
 	if confirm == false{
 		fmt.Printf("\nYou may continue your purchase\n\n")
@@ -184,11 +165,12 @@ func update_db(db []Game, panier *[]Game, confirm bool) {
 		return
 	}
 	pn := *panier
+	gn := *db
 
 	for p := 0; p < len(pn); p++ {
-		for d := 0; d < len(db); d++ {
-			if pn[p].Name == db[d].Name {
-				db[d].edit(pn[p].Quantity)
+		for d := 0; d < len(gn); d++ {
+			if pn[p].Name == gn[d].Name {
+				gn[d].edit(pn[p].Quantity)
 			}
 		}
 	}
@@ -212,7 +194,7 @@ About menu
 */
 
 
-func do_menu(db []Game) int{
+func do_menu(db *[]Game) int{
 	var choice int
 	display_db(db)
 	
@@ -227,7 +209,7 @@ func do_menu(db []Game) int{
 }
 
 
-func process_choice(choice int, db []Game, p *[]Game){
+func process_choice(choice int, db *[]Game, p *[]Game){
 
 	switch choice {
 	case MENU_QUIT:
@@ -235,13 +217,13 @@ func process_choice(choice int, db []Game, p *[]Game){
 		os.Exit(0)
 
 	case MENU_SHOW_PANIER:
-		show_panier(*p)
+		show_panier(p)
 
 	case MENU_ORDER:
 		order(db, p)
 	
 	case MENU_CONFIRM:
-		show_panier(*p)
+		show_panier(p)
 		update_db(db, p, confirm_order())
 		edit_db(db, "db")
 
@@ -255,11 +237,10 @@ func main() {
 
 	fmt.Printf("------------ Welcome to the koolwx shop ---------------\n")
 	database := load_db("db")
-	var p []Game
+	var panier []Game
 
 	for {
-		process_choice(do_menu(database), database, &p)
+		process_choice(do_menu(&database), &database, &panier)
 	}
-	//edit_file()
 
 }
